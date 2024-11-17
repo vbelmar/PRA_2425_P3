@@ -33,42 +33,48 @@ class HashTable: public Dict<V> {
 	}
 
 		
-	V insert(std::string key, V value) override {
+	void insert(std::string key, V value) override {
 		int cubeta = h(key);
 		TableEntry<V> entry(key, value);
 
-		if(table[cubeta].contains(entry)) {
-			throw std::runtime_error("Kay duplicada en la tabla hash");
-		}
+		for(int i=0; i< table[cubeta].size(); i++){
+                        if(table[cubeta].get(i) == entry){ //El get va a dar error?
+    				throw std::runtime_error("Llave duplicada");
+                        }
+                }
 
-		table[cubeta].insert(entry);
+		table[cubeta].insert(0, entry);
 		n += 1;
 	}
 
 	V search(std::string key) override {
-	        int bucket = h(key);
+	        int cubeta = h(key);
         	TableEntry<V> searchKey(key);
 
-        	try {
-            		return table[bucket].search(searchKey).value;
-        	} catch (const std::runtime_error&) {
-            		throw std::runtime_error("Key no encontrada");
-        	}	
+        	for(int i=0; i< table[cubeta].size(); i++){
+                        if(table[cubeta].get(i) == searchKey){ //El get va a dar error?
+                                return table[cubeta].get(i).value;
+                        }
+                }
+		
+		throw std::runtime_error("Key no encontrada");	
     	}
 
 
 	V remove(std::string key) override {
-        	int bucket = h(key);
+        	int cubeta = h(key);
         	TableEntry<V> searchKey(key);
 
-        	try {
-            		V value = table[bucket].search(searchKey).value;
-            		table[bucket].remove(searchKey);
-            		--n;
-            		return value;
-        	} catch (const std::runtime_error&) {
-            		throw std::runtime_error("Key no encontrada");
+        	for (int i = 0; i < table[cubeta].size(); ++i) {
+         		if (table[cubeta].get(i) == searchKey) {
+                		V value = table[cubeta].get(i).value;
+                		table[cubeta].remove(i); // Usa el índice para eliminar.
+                		--n;
+                		return value;
+            		}
         	}
+		
+		throw std::runtime_error("Key no encontrada");
     	}
 
 	int entries() override {
@@ -88,13 +94,7 @@ class HashTable: public Dict<V> {
 	}
 
 	V operator[](std::string key) {
-		int cubeta = h(key);
-		TableEntry<V> searchKey(key);
-		try{
-			return table[cubeta].search(searchKey).value;
-		} catch (const std::runtime_error&) {
-			throw std::runtime_error("Key no encontrada en la tabla hash");
-		}
+		return search(key);
 
 	}
 
