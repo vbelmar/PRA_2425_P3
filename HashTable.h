@@ -38,7 +38,7 @@ class HashTable: public Dict<V> {
 		TableEntry<V> entry(key, value);
 
 		for(int i=0; i< table[cubeta].size(); i++){
-                        if(table[cubeta].get(i) == entry){ //El get va a dar error?
+                        if(table[cubeta].get(i) == entry){ 
     				throw std::runtime_error("Llave duplicada");
                         }
                 }
@@ -52,7 +52,7 @@ class HashTable: public Dict<V> {
         	TableEntry<V> searchKey(key);
 
         	for(int i=0; i< table[cubeta].size(); i++){
-                        if(table[cubeta].get(i) == searchKey){ //El get va a dar error?
+                        if(table[cubeta].get(i) == searchKey){ 
                                 return table[cubeta].get(i).value;
                         }
                 }
