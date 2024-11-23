@@ -15,39 +15,41 @@ class BSTreeDict: public Dict<V> {
 
 
     public:
-        BSTreeDict(){};
+        BSTreeDict(): tree(new BSTree<TableEntry<V>>()) {};
 
-	~BSTreeDict(){};
+	~BSTreeDict(){
+		delete tree;
+	}
 
 	friend std::ostream& operator<<(std::ostream &out, const BSTreeDict<V> &bs){
-		bs.print_inorder(out, bs->tree.root);
+		out << *bs.tree;
 		return out;
 	}
 
 	V operator[](std::string key){
-		TableEntry<V> entry(key);
-        	return tree.search(entry).value;	
+		TableEntry<V> entry(key, V());
+        	return tree->search(entry).value;	
 	}
 
 	void insert(std::string key, V value) override {
         	TableEntry<V> entry(key, value);
-        	tree.insert(entry);
+        	tree->insert(entry);
     	}
 
     	V search(std::string key) override {
-        	TableEntry<V> entry(key);
-        	return tree.search(entry).value;
-    	}
+        	TableEntry<V> entry(key, V());
+        	return tree->search(entry).value;
+	}
 
     	V remove(std::string key) override {
-        	TableEntry<V> entry(key);
-        	V value = tree.search(entry).value;
-        	tree.remove(entry);
+        	TableEntry<V> entry(key, V());
+        	V value = tree->search(entry).value;
+        	tree->remove(entry);
         	return value;
     	}
 
     	int entries() override {
-        	return tree.size();
+        	return this->tree->size();
     	}
         
 };
